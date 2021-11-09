@@ -10,6 +10,7 @@ import com.globallogic.app.databinding.ItemPokemonBinding
 class PokemonViewpagerAdapter : RecyclerView.Adapter<PokemonViewpagerAdapter.PokemonViewHolder>() {
 
     var mImageList = ArrayList<PokemonImage>()
+
     fun setImageData(list:ArrayList<PokemonImage>) {
         mImageList.clear()
         mImageList.addAll(list)
@@ -33,6 +34,5 @@ class PokemonViewpagerAdapter : RecyclerView.Adapter<PokemonViewpagerAdapter.Pok
             itemPokemonBinding.executePendingBindings()
         }
     }
-
 
 }

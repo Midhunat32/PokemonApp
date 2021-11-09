@@ -13,12 +13,15 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
 
     private val TAG = javaClass.name
-    lateinit var mBinding:ActivityMainBinding
-    lateinit var mViewModel:PokemonViewModel
-    lateinit var pagerAdapter: PokemonViewpagerAdapter
+    private lateinit var mBinding:ActivityMainBinding
+    private lateinit var mViewModel:PokemonViewModel
+    private val pagerAdapter: PokemonViewpagerAdapter by lazy {
+        PokemonViewpagerAdapter()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         initBinding()
         addPokemonDataObserver()
         fetchRandomPokemonData()
@@ -27,8 +30,18 @@ class MainActivity : AppCompatActivity() {
         setViewPagerAdapter()
     }
 
+    private fun initBinding() {
+        mBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(mBinding.root)
+        val apiService = RetrofitClient.apiService
+        mViewModel = ViewModelProvider(this,
+            ViewModelFactory(PokemonRepository(apiService))).get(PokemonViewModel::class.java)
+        mBinding.lifecycleOwner = this
+        mBinding.setVariable(BR.model, mViewModel)
+        mBinding.executePendingBindings()
+    }
+
     private fun setViewPagerAdapter() {
-        pagerAdapter = PokemonViewpagerAdapter()
         mBinding.viewpager.adapter = pagerAdapter
     }
 
@@ -52,21 +65,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun addPokemonDataObserver() {
         mViewModel.pokemonLiveData.observe(this, {
-            mBinding.setVariable(BR.pokemonData, it)
-            mBinding.executePendingBindings()
-            mBinding.viewpager.setCurrentItem(0,true)
-            mBinding.swipeLayout.isRefreshing = false
+            mBinding.apply {
+                setVariable(BR.pokemonData, it)
+                executePendingBindings()
+                viewpager.setCurrentItem(0,true)
+                swipeLayout.isRefreshing = false
+            }
         })
     }
 
-    private fun initBinding() {
-        mBinding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(mBinding.root)
-        val apiService = RetrofitClient.apiService
-        mViewModel = ViewModelProvider(this,
-            ViewModelFactory(PokemonRepository(apiService))).get(PokemonViewModel::class.java)
-        mBinding.lifecycleOwner = this
-        mBinding.setVariable(BR.model, mViewModel)
-        mBinding.executePendingBindings()
-    }
+
 }
