@@ -16,6 +16,9 @@ class PokemonViewModel(private val repository: PokemonRepository) : ViewModel() 
     private var imageList = ArrayList<String>()
     var pokemonLiveData :LiveData<Pokemon> = _pokemonLiveData
 
+    /**
+     * Method to fetch random pokemon data.
+     */
      fun getGetRandomData() {
          viewModelScope.launch(Dispatchers.IO) {
              val randomNumber = (1..800).random()
@@ -32,6 +35,9 @@ class PokemonViewModel(private val repository: PokemonRepository) : ViewModel() 
 
     }
 
+    /**
+     * Method to set pokemon image data.
+     */
     private fun setImageData(pokemonData: Pokemon?) {
         imageList.clear()
         pokemonData?.let {
@@ -42,6 +48,11 @@ class PokemonViewModel(private val repository: PokemonRepository) : ViewModel() 
         imageLivedata = _imageMutableLivedata
     }
 
+
+    /**
+     * Method to return pokemon image list
+     * @return LiveData of image list
+     */
     fun getPokemonImages() : LiveData<List<String>> {
        return imageLivedata
     }

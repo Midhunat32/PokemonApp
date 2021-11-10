@@ -6,7 +6,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.globallogic.app.BR
 import com.globallogic.app.R
-import com.globallogic.app.data.PokemonImage
 import com.globallogic.app.databinding.ItemPokemonBinding
 
 class PokemonViewpagerAdapter : RecyclerView.Adapter<PokemonViewpagerAdapter.PokemonViewHolder>() {
@@ -15,10 +14,6 @@ class PokemonViewpagerAdapter : RecyclerView.Adapter<PokemonViewpagerAdapter.Pok
 
     fun setImageData(list: List<String>) {
         mImageList = list
-        notifyDataSetChanged()
-    }
-
-    fun clearData() {
         notifyDataSetChanged()
     }
 
@@ -34,6 +29,7 @@ class PokemonViewpagerAdapter : RecyclerView.Adapter<PokemonViewpagerAdapter.Pok
 
     inner class PokemonViewHolder(private val itemPokemonBinding: ItemPokemonBinding):
         RecyclerView.ViewHolder(itemPokemonBinding.root){
+
         fun bind(image:String) {
             itemPokemonBinding.setVariable(BR.url, image)
             itemPokemonBinding.executePendingBindings()

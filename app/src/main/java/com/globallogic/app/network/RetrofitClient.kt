@@ -8,6 +8,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
 
+    /**
+     * Method to create Retrofit instance.
+     * @return Retrofit object.
+     */
     private fun getRetrofitClient() : Retrofit {
         val logging = HttpLoggingInterceptor().apply {
             setLevel(HttpLoggingInterceptor.Level.BODY)

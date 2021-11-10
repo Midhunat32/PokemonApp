@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.viewpager2.widget.ViewPager2
 import com.globallogic.app.Constants.EMPTY_STRING
 import com.globallogic.app.adapter.PokemonViewpagerAdapter
 import com.globallogic.app.adapter.RvMoveListAdapter
@@ -50,6 +49,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         return true
     }
 
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_refresh -> {
@@ -59,7 +59,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         return super.onOptionsItemSelected(item)
     }
 
-
+    /**
+     * Method to initialize binding
+     */
     private fun initBinding() {
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
@@ -86,13 +88,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             executePendingBindings()
 
         }
-
     }
 
+    /**
+     * Method to set viewpager adapter
+     */
     private fun setViewPagerAdapter() {
         mBinding.viewpager.adapter = pagerAdapter
     }
 
+    /**
+     * Method to observe images of pokemon and set it to viewpager adapter
+     */
     private fun addPokemonImageObserver() {
         mViewModel.getPokemonImages().observe(this, {
             pagerAdapter.setImageData(it)
@@ -100,6 +107,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
 
+    /**
+     * Method to fetch random pokemon data
+     */
     private fun fetchRandomPokemonData() {
         if (Utilities.checkForInternet(this)) {
             mViewModel.getGetRandomData()
@@ -110,10 +120,16 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    /**
+     * Method to clear pokemon name textview
+     */
     private fun clearData() {
         mBinding.tvPokemonName.text = EMPTY_STRING
     }
 
+    /**
+     * Method to observe pokemon data from server
+     */
     private fun addPokemonDataObserver() {
         mViewModel.pokemonLiveData.observe(this, {
             mBinding.rvMoves
@@ -129,6 +145,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         })
     }
 
+    /**
+     * Called when a view has been clicked.
+     * @param view View of clicked widget
+     */
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.iv_arrow_left -> moveLeft()
@@ -136,10 +156,16 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    /**
+     * Method to swipe right in viewpager.
+     */
     private fun moveRight() {
         mBinding.viewpager.currentItem = 1
     }
 
+    /**
+     * Method to swipe left in viewpager.
+     */
     private fun moveLeft() {
         mBinding.viewpager.currentItem = 0
     }

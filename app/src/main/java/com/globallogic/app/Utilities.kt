@@ -7,6 +7,11 @@ import android.os.Build
 
 object Utilities {
 
+    /**
+     * Method to check internet connectivity.
+     * @param context Context
+     * @return true if active internet connection else false.
+     */
      fun checkForInternet(context:Context): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE)
                 as ConnectivityManager
