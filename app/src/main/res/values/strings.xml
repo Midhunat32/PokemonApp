@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Pokemon</string>
     <string name="msg_no_network">No internet connection</string>
+    <string name="menu_refresh">menu_refresh</string>
 </resources>

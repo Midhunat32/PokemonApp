@@ -1,17 +1,17 @@
 package com.globallogic.app
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.globallogic.app.Constants.EMPTY_STRING
 import com.globallogic.app.adapter.PokemonViewpagerAdapter
-import com.globallogic.app.data.PokemonImage
+import com.globallogic.app.adapter.RvMoveListAdapter
 import com.globallogic.app.databinding.ActivityMainBinding
 import com.globallogic.app.network.RetrofitClient
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
@@ -21,6 +21,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mViewModel:PokemonViewModel
     private val pagerAdapter: PokemonViewpagerAdapter by lazy {
         PokemonViewpagerAdapter()
+    }
+
+    private val adapter : RvMoveListAdapter by lazy {
+        RvMoveListAdapter()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,13 +39,29 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.home_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.menu_refresh->{
+                mViewModel.getGetRandomData()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
 
     private fun initBinding() {
         mBinding = ActivityMainBinding.inflate(layoutInflater)
+        mBinding.rvMoves.adapter = adapter
         setContentView(mBinding.root)
         val apiService = RetrofitClient.apiService
         mViewModel = ViewModelProvider(this,
-            ViewModelFactory(PokemonRepository(apiService))).get(PokemonViewModel::class.java)
+            ViewModelFactory(PokemonRepository(apiService)))[PokemonViewModel::class.java]
         mBinding.lifecycleOwner = this
         mBinding.setVariable(BR.model, mViewModel)
         mBinding.executePendingBindings()
@@ -53,21 +73,19 @@ class MainActivity : AppCompatActivity() {
 
     private fun addPokemonImageObserver() {
         mViewModel.getPokemonImages().observe(this, {
-            pagerAdapter.setImageData(it as ArrayList<PokemonImage>)
+            pagerAdapter.setImageData(it)
         })
     }
 
     private fun addSwipeListener() {
-        mBinding.swipeLayout.setOnRefreshListener {
+      /*  mBinding.swipeLayout.setOnRefreshListener {
             fetchRandomPokemonData()
-        }
+        }*/
     }
 
     private fun fetchRandomPokemonData() {
         if(Utilities.checkForInternet(this)) {
-            GlobalScope.launch(Dispatchers.IO) {
-                mViewModel.getGetRandomData()
-            }
+            mViewModel.getGetRandomData()
         } else {
             clearData()
             Toast.makeText(this,resources.getString(R.string.msg_no_network),Toast.LENGTH_LONG).show()
@@ -75,20 +93,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun clearData() {
-        mBinding.swipeLayout.isRefreshing = false
+        //mBinding.swipeLayout.isRefreshing = false
         pagerAdapter.clearData()
-        mBinding.tvMoves.text = EMPTY_STRING
         mBinding.tvPokemonName.text = EMPTY_STRING
-        mBinding.tvStatistics.text = EMPTY_STRING
     }
 
     private fun addPokemonDataObserver() {
         mViewModel.pokemonLiveData.observe(this, {
             mBinding.apply {
+                adapter.setMoves(it.moves)
                 setVariable(BR.pokemonData, it)
                 executePendingBindings()
                 viewpager.setCurrentItem(0,true)
-                swipeLayout.isRefreshing = false
+                //swipeLayout.isRefreshing = false
             }
         })
     }

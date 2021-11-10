@@ -11,16 +11,14 @@ import com.globallogic.app.databinding.ItemPokemonBinding
 
 class PokemonViewpagerAdapter : RecyclerView.Adapter<PokemonViewpagerAdapter.PokemonViewHolder>() {
 
-    var mImageList = ArrayList<PokemonImage>()
+    private var mImageList:List<String> = ArrayList()
 
-    fun setImageData(list:ArrayList<PokemonImage>) {
-        mImageList.clear()
-        mImageList.addAll(list)
+    fun setImageData(list: List<String>) {
+        mImageList = list
         notifyDataSetChanged()
     }
 
     fun clearData() {
-        mImageList.clear()
         notifyDataSetChanged()
     }
 
@@ -36,8 +34,8 @@ class PokemonViewpagerAdapter : RecyclerView.Adapter<PokemonViewpagerAdapter.Pok
 
     inner class PokemonViewHolder(private val itemPokemonBinding: ItemPokemonBinding):
         RecyclerView.ViewHolder(itemPokemonBinding.root){
-        fun bind(image:PokemonImage) {
-            itemPokemonBinding.setVariable(BR.viewpagerdata, image)
+        fun bind(image:String) {
+            itemPokemonBinding.setVariable(BR.url, image)
             itemPokemonBinding.executePendingBindings()
         }
     }

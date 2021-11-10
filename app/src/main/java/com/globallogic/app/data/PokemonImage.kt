@@ -1,3 +1,3 @@
 package com.globallogic.app.data
 
-data class PokemonImage(val url:String)
+data class PokemonImage(val url:String?)
