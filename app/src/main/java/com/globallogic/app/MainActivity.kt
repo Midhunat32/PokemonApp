@@ -1,14 +1,18 @@
 package com.globallogic.app
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.globallogic.app.Constants.EMPTY_STRING
+import com.globallogic.app.adapter.PokemonViewpagerAdapter
 import com.globallogic.app.data.PokemonImage
 import com.globallogic.app.databinding.ActivityMainBinding
 import com.globallogic.app.network.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,7 +32,9 @@ class MainActivity : AppCompatActivity() {
         addSwipeListener()
         addPokemonImageObserver()
         setViewPagerAdapter()
+
     }
+
 
     private fun initBinding() {
         mBinding = ActivityMainBinding.inflate(layoutInflater)
@@ -58,9 +64,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun fetchRandomPokemonData() {
-        GlobalScope.launch(Dispatchers.IO) {
-            mViewModel.getGetRandomData()
+        if(Utilities.checkForInternet(this)) {
+            GlobalScope.launch(Dispatchers.IO) {
+                mViewModel.getGetRandomData()
+            }
+        } else {
+            clearData()
+            Toast.makeText(this,resources.getString(R.string.msg_no_network),Toast.LENGTH_LONG).show()
         }
+    }
+
+    private fun clearData() {
+        mBinding.swipeLayout.isRefreshing = false
+        pagerAdapter.clearData()
+        mBinding.tvMoves.text = EMPTY_STRING
+        mBinding.tvPokemonName.text = EMPTY_STRING
+        mBinding.tvStatistics.text = EMPTY_STRING
     }
 
     private fun addPokemonDataObserver() {
@@ -73,6 +92,4 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
-
-
 }

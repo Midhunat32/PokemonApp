@@ -1,9 +1,11 @@
-package com.globallogic.app
+package com.globallogic.app.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.globallogic.app.BR
+import com.globallogic.app.R
 import com.globallogic.app.data.PokemonImage
 import com.globallogic.app.databinding.ItemPokemonBinding
 
@@ -14,6 +16,11 @@ class PokemonViewpagerAdapter : RecyclerView.Adapter<PokemonViewpagerAdapter.Pok
     fun setImageData(list:ArrayList<PokemonImage>) {
         mImageList.clear()
         mImageList.addAll(list)
+        notifyDataSetChanged()
+    }
+
+    fun clearData() {
+        mImageList.clear()
         notifyDataSetChanged()
     }
 
